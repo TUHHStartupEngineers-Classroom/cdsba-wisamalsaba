@@ -4,4 +4,3 @@ title: "Statistical Concepts"
 
 ::: callout-note
 You can delete everything in here and start fresh.
-:::
