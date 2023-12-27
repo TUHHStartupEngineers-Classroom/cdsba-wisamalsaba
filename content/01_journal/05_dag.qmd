@@ -1,7 +1,53 @@
----
-title: "Directed Acyclic Graphs"
----
+# Causal Relationships and Regression Analysis
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+# Loading Required Libraries
+library(tidyverse)
+library(dagitty)
+library(ggdag)
+
+# Creating a DAG to visualize potential causal relationships between sales, parking spots, and location
+sales_dag <- dagify(
+  sales ~ parking_spots,
+  sales ~ location,
+  parking_spots ~ location, # where location is the confounder
+  labels = c(
+    "sales" = "Sales",
+    "parking_spots" = "Parking \n Spots",
+    "location" = "Location"
+  )
+)
+ggdag(sales_dag, use_labels = "label", text = FALSE)
+
+# Loading and examining customer satisfaction data
+sat_data <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/customer_sat.rds')
+head(sat_data)
+
+# Regression Analysis
+model1 <- lm(satisfaction ~ follow_ups, data = sat_data)
+summary(model1)
+
+model2 <- lm(satisfaction ~ follow_ups + subscription, data = sat_data)
+summary(model2)
+
+# Coefficients Comparison
+coef_comparison <- data.frame(
+  Model = c("Model 1", "Model 2"),
+  Intercept = c(coef(model1)[1], coef(model2)[1]),
+  FollowUps = c(coef(model1)[2], coef(model2)[2]),
+  PremiumPlus = c(0, coef(model2)[grep("subscriptionPremium\\+", names(coef(model2)))]),
+  Elite = c(0, coef(model2)[grep("subscriptionElite", names(coef(model2)))])
+)
+print(coef_comparison)
+
+# Data Visualization
+simps_not_cond <- ggplot(sat_data, aes(x = follow_ups, y = satisfaction)) +
+  geom_point(alpha = 0.8) +
+  stat_smooth(method = "lm", se = F) +
+  labs(title = "Relationship: Follow-ups and Satisfaction",
+       x = "Follow-ups",
+       y = "Satisfaction") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+simps_cond <- ggplot(s
