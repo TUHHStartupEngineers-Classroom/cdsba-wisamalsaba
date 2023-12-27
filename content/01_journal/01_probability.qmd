@@ -1,97 +1,102 @@
----
-title: "Probability Theory"
----
+# Probability Calculations
+#Assignment 1.1
+Given:
+- \(P(S) = 0.3\)
+- \(P(T|S) = 0.2\)
+- \(P(T|\neg S) = 0.6\)
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+Calculations:
+- \(P(\neg S) = 1 - P(S)\)
+- \(P(\neg T|S) = 1 - P(T|S)\)
+- \(P(\neg T|\neg S) = 1 - P(T|\neg S)\)
 
-This is a `.qmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
+Results:
+- \(P(T \cap S) = P(S) \times P(T|S)\)
+- \(P(T \cap \neg S) = P(\neg S) \times P(\neg T|\neg S)\)
+- \(P(\neg T \cap S) = P(S) \times P(\neg T|S)\)
+- \(P(\neg T \cap \neg S) = P(\neg S) \times P(T|\neg S)\)
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+#Assignment 1.2
 
-# Text Formatting
+```{r device_usage, echo=FALSE}
+# Load necessary libraries
+```{r device_usage, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(ggVennDiagram)
 
-*italics* and **bold**
+# Total Number of observations
+num_observations <- 1000
 
-superscript^2^ / subscript~2~
+# Create tibble to simulate user device usage
+user_devices <- tibble(
+  user_id = 1:num_observations,
+  smartphone = rbinom(num_observations, 1, 0.4),
+  tablet = ifelse(smartphone == 1, rbinom(num_observations, 1, 0.2), rbinom(num_observations, 1, 0.5)),
+  computer = ifelse(tablet == 1, rbinom(num_observations, 1, 0.1), rbinom(num_observations, 1, 0.3))
+)
 
-~~strikethrough~~
+# Ensure at least one device is active for each user
+user_devices <- user_devices %>%
+  rowwise() %>% 
+  mutate(smartphone = ifelse(sum(smartphone, tablet, computer) == 0, 1, smartphone))
 
-`verbatim code`
+# Display the first ten lines
+head(user_devices, 10)
 
-> Blockquote
+# Get column sums
+column_sums <- colSums(user_devices)
 
-# Headings
+# Extract sets for each device
+users_with_smartphone <- which(user_devices$smartphone == 1)
+users_with_tablet <- which(user_devices$tablet == 1)
+users_with_computer <- which(user_devices$computer == 1)
 
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-###### Header 6
+# List of all device sets
+device_sets <- list(users_with_smartphone, users_with_tablet, users_with_computer)
 
-# Links & Images
+# Plot Venn diagram to visualize device usage overlap
+ggVennDiagram(device_sets, category.names = c("Smartphone", "Tablet", "Computer"),
+              label_percent_digit = 2) +
+  # Customize appearance
+  theme(legend.position = "none", 
+        panel.background = element_rect("white"),
+        strip.background = element_rect("white")) +
+  scale_x_continuous(expand = expansion(mult = .24))
 
-<https://quarto.org>
+# Calculate intersection of all three device sets
+users_with_all_devices <- Reduce(intersect, device_sets)
+percentage_all_devices <- length(users_with_all_devices) / num_observations * 100
+cat("Percentage of customers using all three devices:", round(percentage_all_devices, 2), "%\n")
 
-[Quarto](https://quarto.org)
+# Calculate union of sets for users with at least two devices
+users_with_at_least_two <- union(intersect(users_with_smartphone, users_with_tablet), union(intersect(users_with_smartphone, users_with_computer), 
+                                       intersect(users_with_computer, users_with_tablet)))
+percentage_at_least_two_devices <- length(users_with_at_least_two) / num_observations * 100
+cat("Percentage of customers using at least two devices:", round(percentage_at_least_two_devices, 2), "%\n")
 
-![Caption](../../assets/img/elephant.png)
+# Calculate sets for users using only one device independently
+users_with_only_smartphone <- users_with_smartphone[!(users_with_smartphone %in% users_with_tablet) & 
+                                                      !(users_with_smartphone %in% users_with_computer)]
+users_with_only_tablet <- users_with_tablet[!(users_with_tablet %in% users_with_smartphone) & 
+                                              !(users_with_tablet %in% users_with_computer)]
+users_with_only_computer <- users_with_computer[!(users_with_computer %in% users_with_smartphone) & 
+                                                  !(users_with_computer %in% users_with_tablet)]
+percentage_only_one_device <- (length(users_with_only_smartphone) + length(users_with_only_tablet) + 
+                                 length(users_with_only_computer)) / num_observations * 100
+cat("Percentage of customers using just one device:", round(percentage_only_one_device, 2), "%\n")
 
-[![Caption](../../assets/img/elephant.png)](https://quarto.org)
+#Assignment 1.3
+# Calculating the probabilities
+Prob_A <- 0.04
+Prob_B_A <- 0.97
+Prob_B_A_Dash <- 0.99
+Prob_A_Dash <- 1 - Prob_A
+Prob_B_Dash_A <- 1 - Prob_B_A
+Prob_B_Dash_A_Dash <- 1 - Prob_B_A_Dash
+Prob_B <- (Prob_B_A * Prob_A) + (Prob_B_A_Dash * Prob_A_Dash)
+Prob_A_Dash_given_B <- (Prob_B_A_Dash * Prob_A_Dash) / Prob_B
+Prob_A_given_B <- (Prob_B_A * Prob_A) / Prob_B
 
-[![Caption](../../assets/img/elephant.png)](https://quarto.org "An elephant")
-
-
-# Lists
-
-* unordered list
-    + sub-item 1
-    + sub-item 2
-        - sub-sub-item 1
-        
-*   item 2
-
-    Continued (indent 4 spaces)
-    
-    
-1. ordered list
-2. item 2
-    i) sub-item 1
-         A.  sub-sub-item 1
-         
-(@)  A list whose numbering
-
-continues after
-
-(@)  an interruption
-
-# Tables
-
-| Right | Left | Default | Center |
-|------:|:-----|---------|:------:|
-|   12  |  12  |    12   |    12  |
-|  123  |  123 |   123   |   123  |
-|    1  |    1 |     1   |     1  |
-
-# Source Code
-
-Use ``` to delimit blocks of source code:
-
-```
-code
-```
-
-Add a language to syntax highlight code blocks:
-
-```{r}
-1 + 1
-```
-
-```{r}
-cars
-```
-
-```{r}
-plot(cars)
-```
+# Print the probabilities
+cat("Probability of A complement given B:", Prob_A_Dash_given_B, "\n")
+cat("Probability of A given B:", Prob_A_given_B, "\n")
