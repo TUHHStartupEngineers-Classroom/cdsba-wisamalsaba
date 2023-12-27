@@ -1,7 +1,40 @@
----
-title: "Difference-in-Differences"
----
+# Hospital Satisfaction Analysis
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(readr)
+library(lmtest)
+
+# Load the dataset
+hospital_data <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/hospdd.rds')
+
+# Manual Computation of Mean Differences
+# Define treatment-related thresholds
+treatment_month_threshold <- 3.0
+treatment_hospital_threshold <- 18
+
+# Convert 'Month' and 'Hospital' columns to numeric
+hospital_data$month <- as.numeric(hospital_data$month)
+hospital_data$hospital <- as.numeric(hospital_data$hospital)
+
+# Segregate data into 'treated' and 'control' groups
+treated_hospitals <- hospital_data %>%
+  filter(hospital <= 18)
+
+control_hospitals <- hospital_data %>%
+  filter(hospital > 18)
+
+# Compute mean difference in satisfaction before treatment
+# (Manual calculation for before and after treatment)
+# ... (Your existing manual computation code)
+
+# Compute Difference-in-Differences (DID)
+# ... (Your existing code for calculating DID)
+
+# Linear Regression Analysis
+# Fit linear regression model
+linear_model <- lm(satis ~ procedure * as.factor(month) + as.factor(month) + as.factor(hospital), data = hospital_data)
+
+# Display regression results
+summary(linear_model)
