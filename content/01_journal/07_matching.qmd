@@ -1,7 +1,87 @@
----
-title: "Matching and Subclassification"
----
+# Causal Analysis using Matching and Weighting
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+library(dplyr)
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+library(MatchIt)
+
+# Load data
+customer_data <- readRDS("C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/membership.rds")
+
+# Explore the data and check relationships between variables
+summary(customer_data)
+cor(customer_data)
+
+# Create DAG using dagitty
+collider <- dagitty('dag {
+  avg_purch <- plus_membership
+  avg_purch <- age
+  avg_purch <- sex
+  avg_purch <- pre_avg_purch
+}')
+
+# Plot DAG using ggdag
+ggdag(collider) +
+  geom_dag_point() +
+  geom_dag_text(color = "red") +
+  geom_dag_edges(edge_color = "green")
+
+# Naive estimation 
+model_naive <- lm(avg_purch ~ card, data = customer_data)
+summary(model_naive)
+
+# CEM Matching
+cem <- matchit(card ~ age + pre_avg_purch + sex,
+               data = customer_data, 
+               method = 'cem', 
+               estimand = 'ATE')
+
+# Covariate balance
+summary(cem)
+
+# Use matched data
+df_cem <- match.data(cem)
+
+# Estimation after matching
+model_cem <- lm(avg_purch ~ card, data = df_cem, weights = weights)
+summary(model_cem)
+
+# Nearest Neighbor Matching
+nn <- matchit(card ~ age + pre_avg_purch + sex,
+              data = customer_data,
+              method = "nearest",
+              distance = "mahalanobis",
+              replace = TRUE)
+
+# Covariate Balance
+summary(nn)
+
+# Use matched data
+df_nn <- match.data(nn)
+
+# Estimation after matching
+model_nn <- lm(avg_purch ~ card, data = df_nn, weights = weights)
+summary(model_nn)
+
+# Propensity Score Calculation
+model_prop <- glm(card ~ age + pre_avg_purch + sex,
+                  data = customer_data,
+                  family = binomial(link = "logit"))
+summary(model_prop)
+
+# Add propensities to table
+df_aug <- customer_data %>% mutate(propensity = predict(model_prop, type = "response"))
+
+# Extend data by IPW scores
+df_ipw <- df_aug %>% mutate(
+  ipw = (card / propensity) + ((1 - card) / (1 - propensity)))
+
+# Look at data with IPW scores
+df_ipw %>% 
+  select(card, age, pre_avg_purch, sex, propensity, ipw)
+
+# Estimation with IPW
+model_ipw <- lm(avg_purch ~ card, data = df_ipw, weights = ipw)
+summary(model_ipw)
