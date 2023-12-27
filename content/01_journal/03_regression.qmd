@@ -1,7 +1,49 @@
----
-title: "Regression and Statistical Inference"
----
+# Loading Libraries
+```{r}
+library(dplyr)
+library(modelr)
+# Loading the dataset
+car_dataset <- readRDS("C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/car_prices.rds")
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+# Dataset Dimensions
+data_dimensions <- dim(car_dataset)
+num_rows <- data_dimensions[1]
+num_columns <- data_dimensions[2]
+cat("Total rows:", num_rows, "\n")
+cat("Total columns:", num_columns, "\n")
+
+# Column Names and Data Types
+column_names_list <- lapply(car_dataset, colnames)
+car_width_type <- typeof(head(car_dataset$carwidth, 1))
+cat("Data type of 'car_width':", car_width_type, "\n")
+car_body_type <- typeof(head(car_dataset$carbody, 1))
+cat("Data type of 'car_body':", car_body_type, "\n")
+print("Two types exist: 'character' and 'double'. Numerical types suit quantitative info, while 'character' types hold categorical or textual data.")
+
+# Data Preprocessing for Regression
+car_dataset[] <- lapply(car_dataset, as.numeric)
+cor_matrix <- car_dataset %>% cor() %>% round(2) %>% Matrix::tril()
+
+# Describing 'enginesize' variable
+first_eng_size <- head(car_dataset$enginesize, 1)
+min_eng_size <- min(car_dataset$enginesize)
+max_eng_size <- max(car_dataset$enginesize)
+cat("'Enginesize' data type:", typeof(first_eng_size), ", Ranges between:", min_eng_size, " and ", max_eng_size, "\n")
+
+# Influence of 'enginesize' on Price
+cat("'Enginesize' impacts price by around 89%, positively correlating. As the engine size increases, price rises proportionally.")
+
+# Creating a new variable for seat heating
+car_dataset_with_heating <- car_dataset %>%
+  mutate(seat_heating_true = sample(c(TRUE, FALSE), size = nrow(car_dataset), replace = TRUE))
+
+# Inspecting seat heating distribution
+table(car_dataset_with_heating$seat_heating_true)
+
+# Regression Analysis with seat heating
+linear_model_with_heating <- lm(price ~ seat_heating_true, data = car_dataset_with_heating)
+
+# Summary of the linear model
+summary(linear_model_with_heating)
+
+cat("Assigning all values as 'TRUE' for seat heating can eliminate variability, leading to issues like collinearity problems and difficulties in coefficient estimation in regression analysis.")
