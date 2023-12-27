@@ -1,7 +1,24 @@
----
-title: "Causality"
----
+# Simulating Storks, Birth Rate, and Urbanization Data
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+# Generate sample data for some regions
+set.seed(987)
+regions <- c("Urbanville", "Suburbia", "Ruraltown", "Cityville", "Countryside")
+storks_count <- rpois(length(regions), lambda = 50)
+birth_rate <- rnorm(length(regions), mean = 15, sd = 5)
+urbanization <- c(80, 60, 30, 90, 20)  # Urbanization percentage for each region
+
+# Creating a dataframe
+data <- data.frame(Region = regions, StorksCount = storks_count, BirthRate = birth_rate, Urbanization = urbanization)
+
+# Loading the ggplot2 library
+library(ggplot2)
+
+# Creating a scatter plot with size representing urbanization
+ggplot(data, aes(x = StorksCount, y = BirthRate, size = Urbanization)) +
+  geom_point() +
+  labs(title = "Spurious Correlation: Storks vs Birth Rate",
+       x = "Storks Count",
+       y = "Birth Rate",
+       size = "Urbanization (%)") +
+  theme_minimal() 
