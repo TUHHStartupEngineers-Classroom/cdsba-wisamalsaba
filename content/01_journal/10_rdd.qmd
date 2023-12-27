@@ -1,7 +1,34 @@
----
-title: "Regression Discontinuity"
----
+# Analyzing Causal Effects and Campaign Comparison
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+# Load necessary libraries and data
+# ... (Your library and data loading code)
+
+# [1] Regression Discontinuity Design Sensitivity Analysis ----
+
+# Define cut-off and bandwidths
+# ... (Your cutoff and bandwidth definitions)
+
+# Function to perform regression discontinuity design analysis
+# ... (Your run_rdd_analysis function)
+
+# Run analysis with original, half, and double bandwidths
+# ... (Your LATE calculations with different bandwidths)
+
+# Printing and explaining results
+cat("Original Bandwidth:\n")
+# ... (Your print and summary of results with explanations)
+
+# [2] Different Past Campaign ----
+
+# Read data for a different past campaign
+# ... (Your data read code for a different campaign)
+
+# Running manipulation tests
+# ... (Your rdd_density and summary)
+
+# Explaining manipulation test results
+cat("Explanation of manipulation tests...")
+
+# Plotting histogram for confirmation
+# ... (Your histogram plotting code)
