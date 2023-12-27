@@ -1,7 +1,42 @@
----
-title: "Instrumental Variables"
----
+# Analyzing Causal Effects Using Instrumental Variables
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+# Loading required libraries
+library(tidyverse)
+library(dagitty)
+library(ggdag)
+library(estimatr)
+library(AER)
+
+# Defining and Visualizing the DAG
+dag_structure <- dagify(
+  # ... (Your existing DAG code)
+)
+ggdag(dag_structure, text = FALSE, use_labels = "label")
+
+# Data Loading and Exploration
+data_frame <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/rand_enc.rds')
+head(data_frame)
+
+# Calculating Naive Estimate
+naive_est <- lm(time_spent ~ used_ftr, data = data_frame)
+summary(naive_est)
+
+# Assessing Correlation Matrix and Observations
+correlation_matrix <- cor(data_frame) %>% round(2)
+
+cat("  ## Explanation of observations...")
+
+# Estimating with Instrumental Variables Using 2SLS with rand_enc and Robust Standard Errors
+model_iv_robust <- iv_robust(time_spent ~ used_ftr | rand_enc, data = data_frame)
+summary(model_iv_robust)
+
+## Hansen J Test
+# ... (Your existing Hansen J test code)
+
+cat("  ## Explanation of the Hansen J test...")
+
+cat("Naive Estimate:", coef(naive_est)['used_ftr'], "\n")
+cat("IV Robust Estimate (rand_enc):", model_iv_robust$coefficients['used_ftr'], "\n")
+
+cat("  ## Comparison of estimates...")
