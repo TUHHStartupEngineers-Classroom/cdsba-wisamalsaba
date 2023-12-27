@@ -1,7 +1,73 @@
----
-title: "Randomized Controlled Trials"
----
+# Comparing Metrics and Linear Regression
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+library(ggplot2)
+
+# Load customer data
+online_data <- readRDS("C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/abtest_online.rds")
+online_data
+
+# Create plots to compare different metrics
+compare_purchase_amount_plot <- 
+  ggplot(online_data, 
+         aes(x = chatbot, 
+             y = purchase_amount, 
+             color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = FALSE) +
+  labs(x = NULL, y = "purchase_amount", title = "Difference in purchase amount")+
+  scale_x_discrete(labels = c("Not Treated","Treated"))
+
+compare_previous_visit_plot <- 
+  ggplot(online_data, 
+         aes(x = chatbot, 
+             y = previous_visit, 
+             color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = FALSE) +
+  labs(x = NULL, y = "previous_visit", title = "Difference in previous visit")+
+  scale_x_discrete(labels = c("Not Treated","Treated"))
+
+compare_mobile_device_plot <- 
+  ggplot(online_data, 
+         aes(x = chatbot, 
+             y = mobile_device, 
+             color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = FALSE) +
+  labs(x = NULL, y = "mobile_device", title = "Difference in mobile device")+
+  scale_x_discrete(labels = c("Not Treated","Treated"))
+
+compare_purchase_plot <- 
+  ggplot(online_data, 
+         aes(x = chatbot,
+             y = purchase, 
+             color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = FALSE) +
+  labs(x = NULL, y = "purchase", title = "Difference in purchase")+
+  scale_x_discrete(labels = c("Not Treated","Treated"))
+
+# Display comparison plots
+compare_purchase_amount_plot
+compare_previous_visit_plot
+compare_mobile_device_plot
+compare_purchase_plot
+
+# Linear regression models
+lm_purchase <- lm(purchase ~ chatbot, data = online_data)
+summary(lm_purchase)
+
+lm_purchase_amount <- lm(purchase_amount ~ chatbot, data = online_da)
