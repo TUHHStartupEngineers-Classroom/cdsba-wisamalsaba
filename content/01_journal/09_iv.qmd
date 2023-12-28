@@ -1,5 +1,13 @@
-# Analyzing Causal Effects Using Instrumental Variables
-
+---
+title: "Instrumental Variables"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 9**
 ```{r}
 # Loading required libraries
 library(tidyverse)
@@ -8,9 +16,23 @@ library(ggdag)
 library(estimatr)
 library(AER)
 
-# Defining and Visualizing the DAG
+# Q1 - Defining and Visualizing the DAG
 dag_structure <- dagify(
-  # ... (Your existing DAG code)
+  spentTime ~ featureUsed,
+  spentTime ~ Unobserved,
+  featureUsed ~ Unobserved,
+  featureUsed ~ encourgement,
+  exposure = "featureUsed",
+  latent = "Unobserved",
+  outcome = "spentTime",
+  coords = list(x = c(Unobserved = 1, featureUsed = 0, spentTime = 2, encourgement = -1),
+                y = c(Unobserved = 1, featureUsed = 0, spentTime = 0, encourgement = 0)),
+  labels = c(
+    "spentTime" = "Time Spent on the App",
+    "featureUsed" = "Usage of New Feature",
+    "encourgement" = "User Encouragement for Feature Use",
+    "Unobserved" = "Undisclosed Factors"
+  )
 )
 ggdag(dag_structure, text = FALSE, use_labels = "label")
 
@@ -18,25 +40,35 @@ ggdag(dag_structure, text = FALSE, use_labels = "label")
 data_frame <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/rand_enc.rds')
 head(data_frame)
 
-# Calculating Naive Estimate
+# Q2 - Calculating Naive Estimate
 naive_est <- lm(time_spent ~ used_ftr, data = data_frame)
 summary(naive_est)
 
-# Assessing Correlation Matrix and Observations
+# Q3 - Assessing Correlation Matrix and Observations
 correlation_matrix <- cor(data_frame) %>% round(2)
 
-cat("  ## Explanation of observations...")
+cat("  ## The naive estimate (10.82269) surpasses the IV robust estimate using rand_enc (9.738175), suggesting an upward bias in the naive estimate. It implies an overestimation of used_ftr's impact on time_spent.")
+cat("## A strong correlation exists between used_ftr and time_spent.")
+cat("   ## Assuming rand_enc as an instrumental variable appears reasonable, as it displays a weak correlation with the outcome (time_spent) and a stronger correlation with the treatment (used_ftr).")
+cat("## Though the correlation between the instrumental variable and the outcome isn't zero (potentially due to noise), it remains relatively low.")
 
-# Estimating with Instrumental Variables Using 2SLS with rand_enc and Robust Standard Errors
+# Q4 - Estimating with Instrumental Variables Using 2SLS with rand_enc and Robust Standard Errors
 model_iv_robust <- iv_robust(time_spent ~ used_ftr | rand_enc, data = data_frame)
 summary(model_iv_robust)
 
 ## Hansen J Test
-# ... (Your existing Hansen J test code)
+residuals_iv <- residuals(model_iv_robust)
+fitted_values_iv <- fitted(model_iv_robust)
+hansen_test_stat <- sum(residuals_iv * fitted_values_iv)
+p_value_hansen <- 1 - pchisq(hansen_test_stat, df = 1)
 
-cat("  ## Explanation of the Hansen J test...")
+cat("Hansen J Test Statistic:", hansen_test_stat, "\n")
+cat("P-value:", p_value_hansen, "\n")
+
+cat("  ## A Hansen J test with a test statistic near 0 and a p-value close to 1 suggests that the instrument used in the model doesn't violate over-identifying restrictions. It indicates the validity of the instrument, implying no evidence of endogeneity or correlation with the error term.")
 
 cat("Naive Estimate:", coef(naive_est)['used_ftr'], "\n")
 cat("IV Robust Estimate (rand_enc):", model_iv_robust$coefficients['used_ftr'], "\n")
 
-cat("  ## Comparison of estimates...")
+cat("  ## Since the naive estimate (10.82269) exceeds the IV robust estimate using rand_enc (9.738175), the naive estimate probably overestimates the effect of used_ftr on time_spent.")
+```

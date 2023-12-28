@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Oliver Mork">
+<meta name="author" content="Wisam Alsaba">
 
 <title>MyLabJournal - Statistical Concepts</title>
 <style>
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -63,6 +97,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
@@ -165,7 +202,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Oliver Mork </p>
+             <p>Wisam Alsaba </p>
           </div>
   </div>
     
@@ -176,21 +213,98 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<hr>
+<section id="assignment-2" class="level4">
+<h4 class="anchored" data-anchor-id="assignment-2"><strong>Assignment 2</strong></h4>
+<div class="cell" data-hash="02_statistics_cache/html/unnamed-chunk-1_6de1e2dd54d800af33693033f373dce9">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Load data from the stored file</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>loaded_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/random_vars.rds"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">View</span>(loaded_data)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Extracting variables for analysis</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>selected_age <span class="ot">&lt;-</span> loaded_data<span class="sc">$</span>age</span>
+<span id="cb1-7"><a href="#cb1-7"></a>selected_income <span class="ot">&lt;-</span> loaded_data<span class="sc">$</span>income</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Computing the Mean Values</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>average_age <span class="ot">&lt;-</span> <span class="fu">sum</span>(selected_age) <span class="sc">/</span> <span class="fu">length</span>(selected_age)</span>
+<span id="cb1-11"><a href="#cb1-11"></a>average_income <span class="ot">&lt;-</span> <span class="fu">sum</span>(selected_income) <span class="sc">/</span> <span class="fu">length</span>(selected_income)</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">cat</span>(<span class="st">"Average age:"</span>, average_age, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Average age: 33.471</code></pre>
 </div>
-<div class="callout-title-container flex-fill">
-Note
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">cat</span>(<span class="st">"Average income:"</span>, average_income, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Average income: 3510.731</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Calculating the Variance</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>mean_age <span class="ot">&lt;-</span> <span class="fu">mean</span>(selected_age)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>mean_income <span class="ot">&lt;-</span> <span class="fu">mean</span>(selected_income)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>variance_age <span class="ot">&lt;-</span> <span class="fu">sum</span>((selected_age <span class="sc">-</span> mean_age)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fu">length</span>(selected_age) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>variance_income <span class="ot">&lt;-</span> <span class="fu">sum</span>((selected_income <span class="sc">-</span> mean_income)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fu">length</span>(selected_income) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="fu">cat</span>(<span class="st">"Variance of age:"</span>, variance_age, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Variance of age: 340.6078</code></pre>
 </div>
-<div class="callout-body-container callout-body">
-<p>You can delete everything in here and start fresh.</p>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">cat</span>(<span class="st">"Variance of income:"</span>, variance_income, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Variance of income: 8625646</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Computing the Standard Deviations</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>std_deviation_age <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(variance_age)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>std_deviation_income <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(variance_income)</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">cat</span>(<span class="st">"Standard deviation of age:"</span>, std_deviation_age, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Standard deviation of age: 18.45556</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">cat</span>(<span class="st">"Standard deviation of income:"</span>, std_deviation_income, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Standard deviation of income: 2936.945</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Exploring the Standard Deviation Comparison</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">print</span>(<span class="st">"Directly comparing standard deviations may not yield informative insights, especially when variables have distinct units and scales, such as age and income."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "Directly comparing standard deviations may not yield informative insights, especially when variables have distinct units and scales, such as age and income."</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Calculating the Covariance</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>cov_value <span class="ot">&lt;-</span> <span class="fu">sum</span>((selected_age <span class="sc">-</span> mean_age) <span class="sc">*</span> (selected_income <span class="sc">-</span> mean_income)) <span class="sc">/</span> <span class="fu">length</span>(selected_age)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">cat</span>(<span class="st">"Covariance:"</span>, cov_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Covariance: 29670.45</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Calculating the Correlation</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>correlation_value <span class="ot">&lt;-</span> cov_value <span class="sc">/</span> (std_deviation_age <span class="sc">*</span> std_deviation_income)</span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">cat</span>(<span class="st">"Correlation:"</span>, correlation_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Correlation: 0.5473952</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># Clarifying the Covariance vs. Correlation</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">print</span>(<span class="st">"Correlation, on a standardized scale [-1, 1], facilitates intuitive comparison, indicating the strength and direction of the relationship."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "Correlation, on a standardized scale [-1, 1], facilitates intuitive comparison, indicating the strength and direction of the relationship."</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Conditional Expected Values for Income</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>subset_age_below_18 <span class="ot">&lt;-</span> <span class="fu">subset</span>(loaded_data, age <span class="sc">&lt;=</span> <span class="dv">18</span>)</span>
+<span id="cb21-3"><a href="#cb21-3"></a>conditional_exp_income_below_18 <span class="ot">&lt;-</span> <span class="fu">mean</span>(subset_age_below_18<span class="sc">$</span>income)</span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="fu">cat</span>(<span class="st">"Conditional Expected Income for age &lt;= 18:"</span>, conditional_exp_income_below_18, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Conditional Expected Income for age &lt;= 18: 389.6074</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>subset_age_between_18_65 <span class="ot">&lt;-</span> <span class="fu">subset</span>(loaded_data, age <span class="sc">&gt;=</span> <span class="dv">18</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">65</span>)</span>
+<span id="cb23-2"><a href="#cb23-2"></a>conditional_exp_income_between_18_65 <span class="ot">&lt;-</span> <span class="fu">mean</span>(subset_age_between_18_65<span class="sc">$</span>income)</span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="fu">cat</span>(<span class="st">"Conditional Expected Income for age in [18, 65):"</span>, conditional_exp_income_between_18_65, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Conditional Expected Income for age in [18, 65): 4685.734</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>subset_age_above_65 <span class="ot">&lt;-</span> <span class="fu">subset</span>(loaded_data, age <span class="sc">&gt;=</span> <span class="dv">65</span>)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>conditional_exp_income_above_65 <span class="ot">&lt;-</span> <span class="fu">mean</span>(subset_age_above_65<span class="sc">$</span>income)</span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="fu">cat</span>(<span class="st">"Conditional Expected Income for age &gt;= 65:"</span>, conditional_exp_income_above_65, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Conditional Expected Income for age &gt;= 65: 1777.237</code></pre>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

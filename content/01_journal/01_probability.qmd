@@ -1,26 +1,41 @@
-# Probability Calculations
-#Assignment 1.1
-Given:
-- \(P(S) = 0.3\)
-- \(P(T|S) = 0.2\)
-- \(P(T|\neg S) = 0.6\)
+---
+title: "Probability Theory"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 1.1**
+```{r}
 
-Calculations:
-- \(P(\neg S) = 1 - P(S)\)
-- \(P(\neg T|S) = 1 - P(T|S)\)
-- \(P(\neg T|\neg S) = 1 - P(T|\neg S)\)
 
-Results:
-- \(P(T \cap S) = P(S) \times P(T|S)\)
-- \(P(T \cap \neg S) = P(\neg S) \times P(\neg T|\neg S)\)
-- \(P(\neg T \cap S) = P(S) \times P(\neg T|S)\)
-- \(P(\neg T \cap \neg S) = P(\neg S) \times P(T|\neg S)\)
+# Define the probabilities and complementary probabilities
+# the dash refers to the complementary probability
+P_S <- 0.3
+P_T_S <- 0.2
+P_T_S_dash <- 0.6
+P_S_dash <- 1 - P_S
+P_T_dash_S <- 1 - P_T_S
+P_T_dash_S_dash <- 1 - P_T_S_dash
 
-#Assignment 1.2
+# Calculate the conditional probabilities
+# inter refers to intersection
+P_T_inter_S <- P_S * P_T_S
+P_T_inter_S_dash <- P_S_dash * P_T_S_dash
+P_T_dash_inter_S <- P_S * P_T_dash_S
+P_T_dash_inter_S_dash <- P_S_dash * P_T_dash_S_dash
 
-```{r device_usage, echo=FALSE}
-# Load necessary libraries
-```{r device_usage, echo=FALSE, message=FALSE}
+# Execute the results
+print(P_T_inter_S)
+print(P_T_inter_S_dash)
+print(P_T_dash_inter_S)
+print(P_T_dash_inter_S_dash)
+```
+#### **Assignment 1.2**
+```{r}
+# Load all necessary libraries
 library(tidyverse)
 library(ggVennDiagram)
 
@@ -84,19 +99,20 @@ users_with_only_computer <- users_with_computer[!(users_with_computer %in% users
 percentage_only_one_device <- (length(users_with_only_smartphone) + length(users_with_only_tablet) + 
                                  length(users_with_only_computer)) / num_observations * 100
 cat("Percentage of customers using just one device:", round(percentage_only_one_device, 2), "%\n")
-
-#Assignment 1.3
-# Calculating the probabilities
+```
+#### **Assignment 1.3**
+```{r}
+#Calculating the probabilities
 Prob_A <- 0.04
 Prob_B_A <- 0.97
-Prob_B_A_Dash <- 0.99
-Prob_A_Dash <- 1 - Prob_A
+Prob_B_A_Dash <- 0.01
+Prob_A_Dash <- 1- Prob_A
 Prob_B_Dash_A <- 1 - Prob_B_A
 Prob_B_Dash_A_Dash <- 1 - Prob_B_A_Dash
-Prob_B <- (Prob_B_A * Prob_A) + (Prob_B_A_Dash * Prob_A_Dash)
-Prob_A_Dash_given_B <- (Prob_B_A_Dash * Prob_A_Dash) / Prob_B
-Prob_A_given_B <- (Prob_B_A * Prob_A) / Prob_B
-
-# Print the probabilities
-cat("Probability of A complement given B:", Prob_A_Dash_given_B, "\n")
-cat("Probability of A given B:", Prob_A_given_B, "\n")
+Prob_B <- (Prob_B_A*Prob_A)+(Prob_B_A_Dash*Prob_A_Dash)
+Prob_A_Dash_given_B <- (Prob_B_A_Dash * Prob_A_Dash)/Prob_B
+Prob_A_given_B <- (Prob_B_A * Prob_A)/Prob_B
+#print the probabilities
+print(Prob_A_Dash_given_B)
+print(Prob_A_given_B)
+```

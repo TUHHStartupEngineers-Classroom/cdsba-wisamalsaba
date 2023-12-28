@@ -1,21 +1,29 @@
-# Loading and Analyzing Data
-
-```{r load-data}
+---
+title: "Statistical Concepts"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 2**
+```{r}
 # Load data from the stored file
 loaded_data <- readRDS("C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/random_vars.rds")
 View(loaded_data)
 
-# Extract variables for analysis
+# Extracting variables for analysis
 selected_age <- loaded_data$age
 selected_income <- loaded_data$income
 
-# Compute Mean Values
+# Computing the Mean Values
 average_age <- sum(selected_age) / length(selected_age)
 average_income <- sum(selected_income) / length(selected_income)
 cat("Average age:", average_age, "\n")
 cat("Average income:", average_income, "\n")
 
-# Calculate Variance
+# Calculating the Variance
 mean_age <- mean(selected_age)
 mean_income <- mean(selected_income)
 variance_age <- sum((selected_age - mean_age)^2) / (length(selected_age) - 1)
@@ -23,25 +31,25 @@ variance_income <- sum((selected_income - mean_income)^2) / (length(selected_inc
 cat("Variance of age:", variance_age, "\n")
 cat("Variance of income:", variance_income, "\n")
 
-# Compute Standard Deviations
+# Computing the Standard Deviations
 std_deviation_age <- sqrt(variance_age)
 std_deviation_income <- sqrt(variance_income)
 cat("Standard deviation of age:", std_deviation_age, "\n")
 cat("Standard deviation of income:", std_deviation_income, "\n")
 
-# Exploring Standard Deviation Comparison
-print("Comparing standard deviations may not yield meaningful insights when variables have different units and scales, like age and income.")
+# Exploring the Standard Deviation Comparison
+print("Directly comparing standard deviations may not yield informative insights, especially when variables have distinct units and scales, such as age and income.")
 
-# Calculate Covariance
+# Calculating the Covariance
 cov_value <- sum((selected_age - mean_age) * (selected_income - mean_income)) / length(selected_age)
 cat("Covariance:", cov_value, "\n")
 
-# Calculate Correlation
+# Calculating the Correlation
 correlation_value <- cov_value / (std_deviation_age * std_deviation_income)
 cat("Correlation:", correlation_value, "\n")
 
-# Clarifying Covariance vs. Correlation
-print("Correlation, on a standardized scale [-1, 1], allows intuitive comparison, depicting the relationship's strength and direction.")
+# Clarifying the Covariance vs. Correlation
+print("Correlation, on a standardized scale [-1, 1], facilitates intuitive comparison, indicating the strength and direction of the relationship.")
 
 # Conditional Expected Values for Income
 subset_age_below_18 <- subset(loaded_data, age <= 18)
@@ -56,4 +64,3 @@ subset_age_above_65 <- subset(loaded_data, age >= 65)
 conditional_exp_income_above_65 <- mean(subset_age_above_65$income)
 cat("Conditional Expected Income for age >= 65:", conditional_exp_income_above_65, "\n")
 ```
-

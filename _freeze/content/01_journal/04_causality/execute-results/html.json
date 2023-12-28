@@ -1,0 +1,18 @@
+{
+  "hash": "86ca9ff46fe565e706ad3c91ece68c96",
+  "result": {
+    "markdown": "---\ntitle: \"Causality\"\nauthor: \"Wisam Alsaba\"\nformat: \n    html:\n      code-line-numbers: true\n      df-print: paged\n---\n\n----\n#### **Assignment 4**\n\n::: {.cell hash='04_causality_cache/html/unnamed-chunk-1_e1db814b0242d4199ee4f5f544554f4e'}\n\n```{.r .cell-code}\n# Simulating a dataset for the correlation between storks and birth rate with a potential confounding variable (urbanization)\n\n# Generate sample data for a few regions\nset.seed(987)\nregions <- c(\"Urbanville\", \"Suburbia\", \"Ruraltown\", \"Cityville\", \"Countryside\")\nstorks_count <- rpois(length(regions), lambda = 50)\nbirth_rate <- rnorm(length(regions), mean = 15, sd = 5)\nurbanization <- c(80, 60, 30, 90, 20)  # Urbanization percentage for each region\n\n# Creating a dataframe\ndata <- data.frame(Region = regions, StorksCount = storks_count, BirthRate = birth_rate, Urbanization = urbanization)\n\n# Loading the ggplot2 library\nlibrary(ggplot2)\n\n# Creating a scatter plot with size representing urbanization\nggplot(data, aes(x = StorksCount, y = BirthRate, size = Urbanization)) +\n  geom_point() +\n  labs(title = \"Spurious Correlation: Storks vs Birth Rate\",\n       x = \"Storks Count\",\n       y = \"Birth Rate\",\n       size = \"Urbanization (%)\") +\n  theme_minimal()\n```\n\n::: {.cell-output-display}\n![](04_causality_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"../../site_libs/pagedtable-1.1/css/pagedtable.css\" rel=\"stylesheet\" />\r\n<script src=\"../../site_libs/pagedtable-1.1/js/pagedtable.js\"></script>\r\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

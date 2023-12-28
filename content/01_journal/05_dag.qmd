@@ -1,5 +1,13 @@
-# Causal Relationships and Regression Analysis
-
+---
+title: "Directed Acyclic Graphs"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 5**
 ```{r}
 # Loading Required Libraries
 library(tidyverse)
@@ -17,7 +25,7 @@ sales_dag <- dagify(
     "location" = "Location"
   )
 )
-ggdag(sales_dag, use_labels = "label", text = FALSE)
+ggdag(sales_dag, use_labels = "label",text= FALSE)
 
 # Loading and examining customer satisfaction data
 sat_data <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/customer_sat.rds')
@@ -50,4 +58,16 @@ simps_not_cond <- ggplot(sat_data, aes(x = follow_ups, y = satisfaction)) +
   theme_minimal() +
   theme(legend.position = "right")
 
-simps_cond <- ggplot(s
+simps_cond <- ggplot(sat_data, aes(x = follow_ups, y = satisfaction, color = subscription)) +
+  geom_point(alpha = 0.8) +
+  stat_smooth(method = "lm", se = F, size = 1) +
+  labs(title = "Relationship by Subscription Level",
+       x = "Follow-ups",
+       y = "Satisfaction",
+       color = "Subscription") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+simps_not_cond
+simps_cond
+```

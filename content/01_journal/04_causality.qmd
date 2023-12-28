@@ -1,7 +1,17 @@
-# Simulating Storks, Birth Rate, and Urbanization Data
-
+---
+title: "Causality"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 4**
 ```{r}
-# Generate sample data for some regions
+# Simulating a dataset for the correlation between storks and birth rate with a potential confounding variable (urbanization)
+
+# Generate sample data for a few regions
 set.seed(987)
 regions <- c("Urbanville", "Suburbia", "Ruraltown", "Cityville", "Countryside")
 storks_count <- rpois(length(regions), lambda = 50)
@@ -21,4 +31,5 @@ ggplot(data, aes(x = StorksCount, y = BirthRate, size = Urbanization)) +
        x = "Storks Count",
        y = "Birth Rate",
        size = "Urbanization (%)") +
-  theme_minimal() 
+  theme_minimal()
+```

@@ -1,5 +1,13 @@
-# Hospital Satisfaction Analysis
-
+---
+title: "Difference-in-Differences"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 8**
 ```{r}
 # Load necessary libraries
 library(dplyr)
@@ -9,7 +17,8 @@ library(lmtest)
 # Load the dataset
 hospital_data <- readRDS('C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/hospdd.rds')
 
-# Manual Computation of Mean Differences
+# 1. Compute mean satisfaction for 'treated' and 'control' hospitals pre- and post-treatment manually
+
 # Define treatment-related thresholds
 treatment_month_threshold <- 3.0
 treatment_hospital_threshold <- 18
@@ -20,21 +29,45 @@ hospital_data$hospital <- as.numeric(hospital_data$hospital)
 
 # Segregate data into 'treated' and 'control' groups
 treated_hospitals <- hospital_data %>%
-  filter(hospital <= 18)
+  filter(hospital <= 18 )
 
 control_hospitals <- hospital_data %>%
-  filter(hospital > 18)
+  filter(hospital > 18 )
 
-# Compute mean difference in satisfaction before treatment
-# (Manual calculation for before and after treatment)
-# ... (Your existing manual computation code)
+# Compute mean difference in satisfaction between treatment and control groups BEFORE treatment
+before_control_mean <- control_hospitals %>% 
+  filter(month <= treatment_month_threshold) %>%
+  summarise(mean_hospital_satisfaction = mean(satis)) %>%
+  pull(mean_hospital_satisfaction)
 
-# Compute Difference-in-Differences (DID)
-# ... (Your existing code for calculating DID)
+before_treatment_mean  <- treated_hospitals %>% 
+  filter(month <= treatment_month_threshold) %>%
+  summarise(mean_hospital_satisfaction = mean(satis)) %>%
+  pull(mean_hospital_satisfaction)
 
-# Linear Regression Analysis
+mean_difference_before <- before_treatment_mean - before_control_mean
+
+# Compute mean difference in satisfaction between treatment and control groups AFTER treatment
+after_control_mean <- control_hospitals %>% 
+  filter(month > treatment_month_threshold) %>%
+  summarise(mean_hospital_satisfaction = mean(satis)) %>%
+  pull(mean_hospital_satisfaction)
+
+after_treatment_mean <- treated_hospitals %>% 
+  filter(month > treatment_month_threshold) %>%
+  summarise(mean_hospital_satisfaction = mean(satis)) %>%
+  pull(mean_hospital_satisfaction)
+
+mean_difference_after <- after_treatment_mean - after_control_mean
+
+# Calculate Difference-in-Differences
+mean_difference_diff <- mean_difference_after - mean_difference_before
+
+# 2. Use linear regression to estimate effects with fixed effects for groups and time
+
 # Fit linear regression model
-linear_model <- lm(satis ~ procedure * as.factor(month) + as.factor(month) + as.factor(hospital), data = hospital_data)
+linear_model <- lm(satis ~ procedure * as.factor(month) + as.factor(hospital), data = hospital_data)
 
 # Display regression results
 summary(linear_model)
+```

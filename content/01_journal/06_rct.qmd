@@ -1,8 +1,15 @@
-# Comparing Metrics and Linear Regression
-
+---
+title: "Randomized Controlled Trials"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 6**
 ```{r}
 library(ggplot2)
-
 # Load customer data
 online_data <- readRDS("C:/Users/wisam/OneDrive/Desktop/Causal_Data_Science_Data/Data/abtest_online.rds")
 online_data
@@ -70,4 +77,5 @@ compare_purchase_plot
 lm_purchase <- lm(purchase ~ chatbot, data = online_data)
 summary(lm_purchase)
 
-lm_purchase_amount <- lm(purchase_amount ~ chatbot, data = online_da)
+lm_purchase_amount <- lm(purchase_amount ~ chatbot, data= online_data)
+```                     

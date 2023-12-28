@@ -1,5 +1,13 @@
-# Causal Analysis using Matching and Weighting
-
+---
+title: "Matching and Subclassification"
+author: "Wisam Alsaba"
+format: 
+    html:
+      code-line-numbers: true
+      df-print: paged
+---
+----
+#### **Assignment 7**
 ```{r}
 library(dplyr)
 library(dagitty)
@@ -27,33 +35,31 @@ ggdag(collider) +
   geom_dag_point() +
   geom_dag_text(color = "red") +
   geom_dag_edges(edge_color = "green")
-
+########################################################################################
 # Naive estimation 
-model_naive <- lm(avg_purch ~ card, data = customer_data)
+model_naive <- lm(avg_purch ~ card   , data = customer_data)
 summary(model_naive)
-
-# CEM Matching
-cem <- matchit(card ~ age + pre_avg_purch + sex,
+######################################################################################
+cem <- matchit(card ~ age + pre_avg_purch+sex,
                data = customer_data, 
                method = 'cem', 
                estimand = 'ATE')
-
 # Covariate balance
 summary(cem)
-
 # Use matched data
 df_cem <- match.data(cem)
 
-# Estimation after matching
+# (2) Estimation
 model_cem <- lm(avg_purch ~ card, data = df_cem, weights = weights)
 summary(model_cem)
-
-# Nearest Neighbor Matching
-nn <- matchit(card ~ age + pre_avg_purch + sex,
+##################################################################################################
+# (1) Matching
+# replace: one-to-one or one-to-many matching
+nn <- matchit(card ~ age + pre_avg_purch+sex,
               data = customer_data,
-              method = "nearest",
-              distance = "mahalanobis",
-              replace = TRUE)
+              method = "nearest", # changed
+              distance = "mahalanobis", # changed
+              replace = T)
 
 # Covariate Balance
 summary(nn)
@@ -61,27 +67,28 @@ summary(nn)
 # Use matched data
 df_nn <- match.data(nn)
 
-# Estimation after matching
+# (2) Estimation
 model_nn <- lm(avg_purch ~ card, data = df_nn, weights = weights)
 summary(model_nn)
-
-# Propensity Score Calculation
-model_prop <- glm(card ~ age + pre_avg_purch + sex,
+##############################################################################
+# (1) Propensity scores
+model_prop <- glm(card ~ age + pre_avg_purch+sex,
                   data = customer_data,
                   family = binomial(link = "logit"))
 summary(model_prop)
-
 # Add propensities to table
 df_aug <- customer_data %>% mutate(propensity = predict(model_prop, type = "response"))
-
+df_aug
 # Extend data by IPW scores
 df_ipw <- df_aug %>% mutate(
-  ipw = (card / propensity) + ((1 - card) / (1 - propensity)))
-
+  ipw = (card/propensity) + ((1-card) / (1-propensity)))
+df_ipw
 # Look at data with IPW scores
 df_ipw %>% 
-  select(card, age, pre_avg_purch, sex, propensity, ipw)
-
-# Estimation with IPW
-model_ipw <- lm(avg_purch ~ card, data = df_ipw, weights = ipw)
+  select(card, age, pre_avg_purch,sex, propensity, ipw)
+# (2) Estimation
+model_ipw <- lm(avg_purch  ~ card ,
+                data = df_ipw, 
+                weights = ipw)
 summary(model_ipw)
+```
